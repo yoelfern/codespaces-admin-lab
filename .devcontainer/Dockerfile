@@ -1,33 +1,22 @@
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+FROM ubuntu:24.04
 
-USER root
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        bash-completion \
+    && apt-get install -y --no-install-recommends \
         ca-certificates \
-        curl \
-        dnsutils \
         git \
-        iproute2 \
-        iputils-ping \
-        jq \
-        less \
-        lsof \
-        nano \
-        net-tools \
-        netcat-openbsd \
-        postgresql-client \
-        procps \
-        python3 \
-        python3-pip \
-        python3-venv \
-        redis-tools \
-        shellcheck \
-        tree \
+        sudo \
+    && groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m -s /bin/bash ${USERNAME} \
+    && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME} \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-LABEL org.opencontainers.image.title="Codespaces Admin Lab"
-LABEL org.opencontainers.image.description="Dev container para aprender administración de GitHub Codespaces"
-
-USER vscode
+USER ${USERNAME}
+WORKDIR /workspaces
