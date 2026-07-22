@@ -1,0 +1,76 @@
+name: codespaces-admin-lab
+
+services:
+  app:
+    build:
+      context: ./app
+    environment:
+      APP_MESSAGE: "${APP_MESSAGE:-Administrando GitHub Codespaces}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lab}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}@db:5432/${POSTGRES_DB:-labdb}"
+      REDIS_URL: "redis://redis:6379/0"
+      LAB_ENVIRONMENT: "${LAB_ENVIRONMENT:-compose}"
+      LAB_SECRET: "${LAB_SECRET:-}"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-labdb}"
+      POSTGRES_USER: "${POSTGRES_USER:-lab}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lab} -d ${POSTGRES_DB:-labdb}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - backend
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:4
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  frontend:
+  backend:
+    internal: false
+
+volumes:
+  postgres-data:
+  redis-data:

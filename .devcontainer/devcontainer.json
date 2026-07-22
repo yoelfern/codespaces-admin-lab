@@ -1,0 +1,48 @@
+{
+  "name": "Laboratorio: Administrador de Codespaces",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+  "forwardPorts": [8000, 8080, 8081],
+  "portsAttributes": {
+    "8000": {
+      "label": "Aplicación Flask",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Adminer",
+      "onAutoForward": "silent"
+    },
+    "8081": {
+      "label": "Contenedor web manual",
+      "onAutoForward": "silent"
+    }
+  },
+  "containerEnv": {
+    "LAB_ENVIRONMENT": "codespaces",
+    "AUTO_START_STACK": "false"
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "ms-python.python",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.eol": "\n"
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}
