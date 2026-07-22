@@ -1,8 +1,8 @@
-# Codespace básico con Ubuntu
+# Codespace básico con AlmaLinux
 
 Este repositorio contiene la configuración mínima para construir un Codespace
-personalizado. No incluye aplicaciones, bases de datos, Docker-in-Docker ni
-Docker Compose.
+personalizado sobre AlmaLinux. No incluye aplicaciones, bases de datos,
+Docker-in-Docker ni Docker Compose.
 
 ## Archivos importantes
 
@@ -20,15 +20,17 @@ vida para este ejemplo.
 
 ### `.devcontainer/Dockerfile`
 
-Define la imagen del contenedor. Parte de `ubuntu:24.04` e instala solamente:
+Define la imagen del contenedor. Parte de `almalinux:9` e instala solamente:
 
 - `git`, para trabajar con repositorios;
 - `ca-certificates`, para conexiones HTTPS confiables;
 - `sudo`, para que el usuario de desarrollo pueda instalar algo manualmente
   durante las pruebas.
 
-También crea el usuario no-root `vscode`, que es el usuario con el que se abre
-la terminal del Codespace.
+También instala las herramientas necesarias para crear el usuario no-root
+`vscode`, que es el usuario con el que se abre la terminal del Codespace. El
+Dockerfile no presupone que el GID 1000 esté disponible: si ya existe, lo
+reutiliza.
 
 ### `.devcontainer/diagnose.sh`
 
@@ -56,7 +58,7 @@ bash .devcontainer/diagnose.sh
 ```text
 GitHub Codespaces
 └── contenedor de desarrollo
-    ├── imagen base: Ubuntu 24.04
+    ├── imagen base: AlmaLinux 9
     ├── herramientas: Git, certificados y sudo
     ├── usuario: vscode
     └── extensión de VS Code: vscode-icons

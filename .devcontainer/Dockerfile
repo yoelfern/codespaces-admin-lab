@@ -1,22 +1,24 @@
-FROM ubuntu:24.04
+FROM almalinux:9
 
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN dnf install -y \
         ca-certificates \
         git \
         sudo \
-    && groupadd --gid ${USER_GID} ${USERNAME} \
-    && useradd --uid ${USER_UID} --gid ${USER_GID} -m -s /bin/bash ${USERNAME} \
+        shadow-utils \
+    && existing_group="$(getent group ${USER_GID} | cut -d: -f1 || true)" \
+    && if [ -z "${existing_group}" ]; then \
+         groupadd --gid ${USER_GID} ${USERNAME}; \
+         existing_group=${USERNAME}; \
+       fi \
+    && useradd --uid ${USER_UID} --gid ${existing_group} --create-home --shell /bin/bash ${USERNAME} \
     && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 USER ${USERNAME}
 WORKDIR /workspaces

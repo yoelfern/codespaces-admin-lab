@@ -1,5 +1,5 @@
 {
-  "name": "Codespace básico con Ubuntu",
+  "name": "Codespace básico con AlmaLinux",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
