@@ -1,20 +1,62 @@
 {
-  "name": "Codespace básico con AlmaLinux",
+  // Nombre visible del entorno en VS Code y GitHub Codespaces.
+  "name": "Codespace Ubuntu 24.04 con Docker",
+
+  // Indica que la imagen se construirá desde el Dockerfile del repositorio.
   "build": {
+    // Dockerfile ubicado junto a este archivo dentro de .devcontainer.
     "dockerfile": "Dockerfile",
+
+    // Usa la raíz del repositorio como contexto de construcción de Docker.
     "context": ".."
   },
+
+  // Instala capacidades reutilizables después de construir la imagen base.
+  "features": {
+    // Instala Docker y su daemon interno mediante la Feature oficial.
+    // La opción moby usa la distribución de Docker mantenida para Linux.
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {
+      "version": "latest",
+      "moby": true
+    },
+
+    // Instala Node.js y npm, necesarios para ejecutar Tailwind CSS.
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22"
+    }
+  },
+
+  // Docker-in-Docker necesita privilegios adicionales para iniciar su daemon.
+  "privileged": true,
+
+  // Personalizaciones que VS Code aplicará dentro del contenedor.
   "customizations": {
+    // Configuración específica del editor VS Code.
     "vscode": {
+      // Extensiones instaladas automáticamente en el Codespace.
       "extensions": [
+        // Muestra iconos para tipos de archivo y carpetas.
         "vscode-icons-team.vscode-icons"
       ],
+
+      // Preferencias iniciales del editor.
       "settings": {
+        // Activa el tema de iconos instalado anteriormente.
         "workbench.iconTheme": "vscode-icons",
+
+        // Usa Bash como terminal predeterminada.
         "terminal.integrated.defaultProfile.linux": "bash",
+
+        // Usa saltos de línea LF, habituales en Linux.
         "files.eol": "\n"
       }
     }
   },
+
+  // Instala Tailwind CSS v4 en el entorno del usuario vscode.
+  // Tailwind v4 separa el paquete principal de su CLI.
+  "postCreateCommand": "sudo npm install --global tailwindcss@latest @tailwindcss/cli@latest",
+
+  // Define el usuario no-root que utilizarán VS Code, las terminales y las tareas.
   "remoteUser": "vscode"
 }

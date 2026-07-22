@@ -1,21 +1,45 @@
 #!/usr/bin/env bash
+
+# Hace que el script continúe aunque una herramienta opcional no esté disponible.
 set -u
 
-echo "=== Usuario y ubicación ==="
+# Muestra el usuario y el grupo efectivos dentro del Codespace.
+echo "=== Usuario ==="
 id
+
+# Muestra la carpeta actual desde la que se ejecuta el script.
+echo "=== Ubicación ==="
 pwd
 
-echo
+# Muestra la distribución y la versión del sistema operativo.
 echo "=== Sistema operativo ==="
 cat /etc/os-release
 
-echo
-echo "=== Herramientas instaladas ==="
+# Muestra las versiones de las herramientas instaladas por el Dockerfile.
+echo "=== Herramientas básicas ==="
 git --version
-code --version 2>/dev/null || echo "La CLI de VS Code no está disponible en el terminal."
+python3 --version
+pip3 --version
+curl --version | head -n 1
+ping -V 2>&1 | head -n 1
+cloudflared --version
 
-echo
-echo "=== Variables de Codespaces ==="
+# Muestra las herramientas proporcionadas por las Features.
+echo "=== Features ==="
+node --version
+npm --version
+docker --version
+
+# Comprueba si el daemon interno de Docker está respondiendo.
+echo "=== Docker ==="
+if docker info >/dev/null 2>&1; then
+  echo "El daemon Docker está disponible."
+else
+  echo "El daemon Docker todavía no responde."
+fi
+
+# Muestra variables que GitHub Codespaces puede proporcionar automáticamente.
+echo "=== Codespaces ==="
 printf 'CODESPACES=%s\n' "${CODESPACES:-no definido}"
 printf 'CODESPACE_NAME=%s\n' "${CODESPACE_NAME:-no definido}"
 printf 'GITHUB_REPOSITORY=%s\n' "${GITHUB_REPOSITORY:-no definido}"

@@ -1,8 +1,8 @@
-# Codespace básico con AlmaLinux
+# Codespace Ubuntu 24.04 con Docker
 
-Este repositorio contiene la configuración mínima para construir un Codespace
-personalizado sobre AlmaLinux. No incluye aplicaciones, bases de datos,
-Docker-in-Docker ni Docker Compose.
+Este repositorio contiene una configuración educativa para construir un
+Codespace sobre Ubuntu 24.04 LTS. Incluye Docker mediante una Feature, Node.js,
+Tailwind CSS, `cloudflared`, Python, Git, curl y ping.
 
 ## Archivos importantes
 
@@ -12,25 +12,32 @@ Es el archivo que GitHub Codespaces y VS Code leen para saber cómo crear el
 entorno. En este proyecto indica que debe:
 
 - construir la imagen usando `.devcontainer/Dockerfile`;
+- agregar Docker y Node.js mediante Dev Container Features;
+- instalar Tailwind CSS mediante `postCreateCommand`;
+- usar el usuario `vscode` dentro del contenedor;
 - instalar la extensión `vscode-icons`;
-- usar el usuario `vscode` dentro del contenedor.
-
-No necesita variables de entorno, puertos, Features ni comandos de ciclo de
-vida para este ejemplo.
+- ejecutar Docker-in-Docker con privilegios adicionales.
 
 ### `.devcontainer/Dockerfile`
 
-Define la imagen del contenedor. Parte de `almalinux:9` e instala solamente:
+Define la imagen del contenedor. Parte de `ubuntu:24.04` e instala:
 
 - `git`, para trabajar con repositorios;
 - `ca-certificates`, para conexiones HTTPS confiables;
-- `sudo`, para que el usuario de desarrollo pueda instalar algo manualmente
-  durante las pruebas.
+- `curl`, para descargar recursos por HTTP/HTTPS;
+- `iputils-ping`, para pruebas básicas de conectividad;
+- `python3` y `python3-pip`, para ejecutar Python e instalar paquetes;
+- `sudo`, para que el usuario de desarrollo pueda instalar algo manualmente;
+- `cloudflared`, desde el repositorio oficial de Cloudflare.
 
-También instala las herramientas necesarias para crear el usuario no-root
-`vscode`, que es el usuario con el que se abre la terminal del Codespace. El
-Dockerfile no presupone que el GID 1000 esté disponible: si ya existe, lo
-reutiliza.
+También crea el usuario no-root `vscode`. Si el GID 1000 ya está ocupado, usa
+otro GID disponible y evita el fallo que ocurría en la configuración anterior.
+
+### Features y Tailwind
+
+`docker-in-docker:4` instala Docker como una Feature y permite utilizar un
+daemon Docker dentro del Codespace. `node:2` instala Node.js 22 y npm. Después,
+`postCreateCommand` instala Tailwind CSS v4 y su CLI oficial.
 
 ### `.devcontainer/diagnose.sh`
 
@@ -58,8 +65,11 @@ bash .devcontainer/diagnose.sh
 ```text
 GitHub Codespaces
 └── contenedor de desarrollo
-    ├── imagen base: AlmaLinux 9
-    ├── herramientas: Git, certificados y sudo
+    ├── imagen base: Ubuntu 24.04 LTS
+    ├── herramientas: Git, Python, curl, ping y cloudflared
+    ├── Feature: Docker-in-Docker
+    ├── Feature: Node.js 22
+    ├── paquete npm: Tailwind CSS v4
     ├── usuario: vscode
     └── extensión de VS Code: vscode-icons
 ```
