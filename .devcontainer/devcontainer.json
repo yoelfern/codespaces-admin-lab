@@ -47,6 +47,9 @@
     }
   },
 
+  // Inicia el daemon de Tailscale cada vez que arranca el contenedor.
+  "postStartCommand": "bash .devcontainer/start-tailscaled.sh",
+
   // Define el usuario no-root que utilizarán VS Code, las terminales y las tareas.
   "remoteUser": "vscode"
 }

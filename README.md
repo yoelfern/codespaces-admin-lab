@@ -42,8 +42,14 @@ daemon Docker dentro del Codespace. La Feature oficial configura los permisos
 necesarios para este modo.
 
 Tailscale y `cloudflared` quedan instalados como clientes. No se conectan
-automáticamente a ninguna red o cuenta: Tailscale requiere ejecutar `sudo
-tailscale up` y completar la autenticación de tu tailnet.
+automáticamente a ninguna red o cuenta. Al iniciar el Codespace se ejecuta
+`start-tailscaled.sh`, que inicia el daemon de Tailscale sin `systemd` y en modo
+userspace, compatible con contenedores. Después debes ejecutar `sudo tailscale
+up` y completar la autenticación de tu tailnet.
+
+El registro del daemon queda en `/tmp/tailscaled.log`. El modo userspace evita
+depender de `/dev/net/tun`; Tailscale lo documenta como una alternativa para
+entornos de contenedores donde no existe ese dispositivo.
 
 ### `.devcontainer/diagnose.sh`
 
