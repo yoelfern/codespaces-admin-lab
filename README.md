@@ -20,7 +20,8 @@ entorno. En este proyecto indica que debe:
 
 ### `.devcontainer/Dockerfile`
 
-Define la imagen del contenedor. Parte de `ubuntu:24.04` e instala:
+Define la imagen del contenedor. Parte de la imagen oficial
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04` e instala:
 
 - `git`, para trabajar con repositorios;
 - `ca-certificates`, para conexiones HTTPS confiables;
@@ -30,14 +31,15 @@ Define la imagen del contenedor. Parte de `ubuntu:24.04` e instala:
 - `sudo`, para que el usuario de desarrollo pueda instalar algo manualmente;
 - `cloudflared`, desde el repositorio oficial de Cloudflare.
 
-También crea el usuario no-root `vscode`. Si el GID 1000 ya está ocupado, usa
-otro GID disponible y evita el fallo que ocurría en la configuración anterior.
+La imagen base ya incluye el usuario no-root `vscode`, por lo que el Dockerfile
+no intenta crearlo ni asignarle manualmente el GID 1000. Esto evita el error que
+ocurría con la imagen mínima `ubuntu:24.04`.
 
 ### Docker y redes
 
 `docker-in-docker:4` instala Docker como una Feature y permite utilizar un
-daemon Docker dentro del Codespace. `overrideCommand: false` conserva el
-entrypoint de la Feature para que pueda iniciar el daemon.
+daemon Docker dentro del Codespace. La Feature oficial configura los permisos
+necesarios para este modo.
 
 Tailscale y `cloudflared` quedan instalados como clientes. No se conectan
 automáticamente a ninguna red o cuenta: Tailscale requiere ejecutar `sudo

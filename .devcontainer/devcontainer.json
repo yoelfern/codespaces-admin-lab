@@ -23,14 +23,6 @@
     }
   },
 
-  // Permite que Docker-in-Docker utilice las capacidades necesarias del kernel.
-  "runArgs": [
-    "--privileged"
-  ],
-
-  // Conserva el entrypoint de la Feature para que pueda iniciar el daemon Docker.
-  "overrideCommand": false,
-
   // Personalizaciones que VS Code aplicará dentro del contenedor.
   "customizations": {
     // Configuración específica del editor VS Code.
