@@ -55,6 +55,10 @@
   // Inicia el daemon de Tailscale cada vez que arranca el contenedor.
   "postStartCommand": "bash .devcontainer/start-tailscaled.sh",
 
+  // Vuelve a comprobar el daemon cuando VS Code se conecta al Codespace.
+  // Esto cubre reconexiones en las que postStartCommand no vuelve a ejecutarse.
+  "postAttachCommand": "bash .devcontainer/start-tailscaled.sh",
+
   // Instala Codex CLI después de crear o reconstruir el Codespace.
   // La instalación global hace que el comando codex esté disponible.
   "postCreateCommand": "sudo npm install --global @openai/codex",
