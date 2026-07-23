@@ -9,7 +9,7 @@ ARG USERNAME=vscode
 ARG USER_GID=1000
 
 # Actualiza los índices, instala las herramientas básicas y prepara el
-# repositorio oficial de Cloudflare para instalar cloudflared.
+# repositorios oficiales de Cloudflare y Tailscale para instalar sus clientes.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -25,8 +25,12 @@ RUN apt-get update \
     && printf '%s\n' \
         'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' \
         > /etc/apt/sources.list.d/cloudflared.list \
+    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg \
+        -o /usr/share/keyrings/tailscale-archive-keyring.gpg \
+    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list \
+        -o /etc/apt/sources.list.d/tailscale.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends cloudflared \
+    && apt-get install -y --no-install-recommends cloudflared tailscale \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

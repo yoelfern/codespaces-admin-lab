@@ -11,23 +11,25 @@
     "context": ".."
   },
 
-  // Instala capacidades reutilizables después de construir la imagen base.
+  // Instala Docker y su daemon interno mediante la Feature oficial.
   "features": {
-    // Instala Docker y su daemon interno mediante la Feature oficial.
-    // La opción moby usa la distribución de Docker mantenida para Linux.
+    // La opción moby utiliza la distribución de Docker mantenida para Linux.
     "ghcr.io/devcontainers/features/docker-in-docker:4": {
       "version": "latest",
-      "moby": true
-    },
+      "moby": true,
 
-    // Instala Node.js y npm, necesarios para ejecutar Tailwind CSS.
-    "ghcr.io/devcontainers/features/node:2": {
-      "version": "22"
+      // Permite que el usuario vscode ejecute docker sin cambiar a root.
+      "enableNonRootDocker": true
     }
   },
 
-  // Docker-in-Docker necesita privilegios adicionales para iniciar su daemon.
-  "privileged": true,
+  // Permite que Docker-in-Docker utilice las capacidades necesarias del kernel.
+  "runArgs": [
+    "--privileged"
+  ],
+
+  // Conserva el entrypoint de la Feature para que pueda iniciar el daemon Docker.
+  "overrideCommand": false,
 
   // Personalizaciones que VS Code aplicará dentro del contenedor.
   "customizations": {
@@ -52,10 +54,6 @@
       }
     }
   },
-
-  // Instala Tailwind CSS v4 en el entorno del usuario vscode.
-  // Tailwind v4 separa el paquete principal de su CLI.
-  "postCreateCommand": "sudo npm install --global tailwindcss@latest @tailwindcss/cli@latest",
 
   // Define el usuario no-root que utilizarán VS Code, las terminales y las tareas.
   "remoteUser": "vscode"

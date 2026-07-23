@@ -1,8 +1,8 @@
 # Codespace Ubuntu 24.04 con Docker
 
 Este repositorio contiene una configuración educativa para construir un
-Codespace sobre Ubuntu 24.04 LTS. Incluye Docker mediante una Feature, Node.js,
-Tailwind CSS, `cloudflared`, Python, Git, curl y ping.
+Codespace sobre Ubuntu 24.04 LTS. Incluye Docker mediante una Feature,
+Tailscale, `cloudflared`, Python, Git, curl y ping.
 
 ## Archivos importantes
 
@@ -12,8 +12,8 @@ Es el archivo que GitHub Codespaces y VS Code leen para saber cómo crear el
 entorno. En este proyecto indica que debe:
 
 - construir la imagen usando `.devcontainer/Dockerfile`;
-- agregar Docker y Node.js mediante Dev Container Features;
-- instalar Tailwind CSS mediante `postCreateCommand`;
+- agregar Docker mediante una Dev Container Feature;
+- instalar Tailscale y `cloudflared` desde sus repositorios oficiales;
 - usar el usuario `vscode` dentro del contenedor;
 - instalar la extensión `vscode-icons`;
 - ejecutar Docker-in-Docker con privilegios adicionales.
@@ -33,11 +33,15 @@ Define la imagen del contenedor. Parte de `ubuntu:24.04` e instala:
 También crea el usuario no-root `vscode`. Si el GID 1000 ya está ocupado, usa
 otro GID disponible y evita el fallo que ocurría en la configuración anterior.
 
-### Features y Tailwind
+### Docker y redes
 
 `docker-in-docker:4` instala Docker como una Feature y permite utilizar un
-daemon Docker dentro del Codespace. `node:2` instala Node.js 22 y npm. Después,
-`postCreateCommand` instala Tailwind CSS v4 y su CLI oficial.
+daemon Docker dentro del Codespace. `overrideCommand: false` conserva el
+entrypoint de la Feature para que pueda iniciar el daemon.
+
+Tailscale y `cloudflared` quedan instalados como clientes. No se conectan
+automáticamente a ninguna red o cuenta: Tailscale requiere ejecutar `sudo
+tailscale up` y completar la autenticación de tu tailnet.
 
 ### `.devcontainer/diagnose.sh`
 
@@ -68,8 +72,7 @@ GitHub Codespaces
     ├── imagen base: Ubuntu 24.04 LTS
     ├── herramientas: Git, Python, curl, ping y cloudflared
     ├── Feature: Docker-in-Docker
-    ├── Feature: Node.js 22
-    ├── paquete npm: Tailwind CSS v4
+    ├── cliente: Tailscale
     ├── usuario: vscode
     └── extensión de VS Code: vscode-icons
 ```

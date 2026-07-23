@@ -23,11 +23,10 @@ pip3 --version
 curl --version | head -n 1
 ping -V 2>&1 | head -n 1
 cloudflared --version
+tailscale version
 
-# Muestra las herramientas proporcionadas por las Features.
+# Muestra las herramientas proporcionadas por la Feature de Docker.
 echo "=== Features ==="
-node --version
-npm --version
 docker --version
 
 # Comprueba si el daemon interno de Docker está respondiendo.
