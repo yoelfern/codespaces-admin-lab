@@ -22,12 +22,19 @@ python3 --version
 pip3 --version
 curl --version | head -n 1
 ping -V 2>&1 | head -n 1
+nmap --version | head -n 1
 cloudflared --version
 tailscale version
 
 # Muestra las herramientas proporcionadas por la Feature de Docker.
 echo "=== Features ==="
+node --version
+npm --version
 docker --version
+
+# Muestra la versión de Codex CLI instalada durante postCreateCommand.
+echo "=== Codex CLI ==="
+codex --version
 
 # Comprueba si el daemon interno de Docker está respondiendo.
 echo "=== Docker ==="

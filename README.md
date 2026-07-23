@@ -1,8 +1,8 @@
 # Codespace Ubuntu 24.04 con Docker
 
 Este repositorio contiene una configuración educativa para construir un
-Codespace sobre Ubuntu 24.04 LTS. Incluye Docker mediante una Feature,
-Tailscale, `cloudflared`, Python, Git, curl y ping.
+Codespace sobre Ubuntu 24.04 LTS. Incluye Docker y Node.js mediante Features,
+Codex CLI, Tailscale, `cloudflared`, Nmap, Python, Git, curl y ping.
 
 ## Archivos importantes
 
@@ -13,6 +13,8 @@ entorno. En este proyecto indica que debe:
 
 - construir la imagen usando `.devcontainer/Dockerfile`;
 - agregar Docker mediante una Dev Container Feature;
+- agregar Node.js 22 y npm mediante una Dev Container Feature;
+- instalar Codex CLI después de crear el Codespace;
 - instalar Tailscale y `cloudflared` desde sus repositorios oficiales;
 - usar el usuario `vscode` dentro del contenedor;
 - instalar la extensión `vscode-icons`;
@@ -27,6 +29,7 @@ Define la imagen del contenedor. Parte de la imagen oficial
 - `ca-certificates`, para conexiones HTTPS confiables;
 - `curl`, para descargar recursos por HTTP/HTTPS;
 - `iputils-ping`, para pruebas básicas de conectividad;
+- `nmap`, para explorar hosts y puertos durante las prácticas;
 - `python3` y `python3-pip`, para ejecutar Python e instalar paquetes;
 - `sudo`, para que el usuario de desarrollo pueda instalar algo manualmente;
 - `cloudflared`, desde el repositorio oficial de Cloudflare.
@@ -50,6 +53,16 @@ up` y completar la autenticación de tu tailnet.
 El registro del daemon queda en `/tmp/tailscaled.log`. El modo userspace evita
 depender de `/dev/net/tun`; Tailscale lo documenta como una alternativa para
 entornos de contenedores donde no existe ese dispositivo.
+
+### Node.js, npm y Codex CLI
+
+La Feature `node:2` instala Node.js 22 y npm. Después, `postCreateCommand`
+instala Codex CLI con el paquete oficial `@openai/codex`. Para iniciar Codex
+desde la raíz del repositorio:
+
+```bash
+codex
+```
 
 ### `.devcontainer/diagnose.sh`
 
@@ -80,6 +93,8 @@ GitHub Codespaces
     ├── imagen base: Ubuntu 24.04 LTS
     ├── herramientas: Git, Python, curl, ping y cloudflared
     ├── Feature: Docker-in-Docker
+    ├── Feature: Node.js 22 y npm
+    ├── CLI: Codex
     ├── cliente: Tailscale
     ├── usuario: vscode
     └── extensión de VS Code: vscode-icons

@@ -7,13 +7,14 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 USER root
 
 # Instala herramientas básicas, agrega los repositorios oficiales de Cloudflare
-# y Tailscale, e instala ambos clientes.
+# y Tailscale, e instala ambos clientes junto con Nmap.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
         git \
         iputils-ping \
+        nmap \
         python3 \
         python3-pip \
     && install -d -m 0755 /usr/share/keyrings \

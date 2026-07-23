@@ -20,6 +20,11 @@
 
       // Permite que el usuario vscode ejecute docker sin cambiar a root.
       "enableNonRootDocker": true
+    },
+
+    // Instala Node.js 22 y npm para ejecutar herramientas JavaScript.
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22"
     }
   },
 
@@ -49,6 +54,10 @@
 
   // Inicia el daemon de Tailscale cada vez que arranca el contenedor.
   "postStartCommand": "bash .devcontainer/start-tailscaled.sh",
+
+  // Instala Codex CLI después de crear o reconstruir el Codespace.
+  // La instalación global hace que el comando codex esté disponible.
+  "postCreateCommand": "sudo npm install --global @openai/codex",
 
   // Define el usuario no-root que utilizarán VS Code, las terminales y las tareas.
   "remoteUser": "vscode"
